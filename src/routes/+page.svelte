@@ -33,14 +33,24 @@
       <button onclick={() => appWindow.close()}>✕</button>
     </div>
   </div>
-
-
-  <div bind:this={editorContainer} style="width: 50%; height: 100%;"></div>
-
-
+  <div class="content">
+    <div bind:this={editorContainer} class="editor"></div>
+  </div>
 </main>
 
+
+
 <style>
+.content {
+  flex: 1;
+  display: flex;
+  min-height: 0;
+}
+
+.editor {
+  width: 50%;
+  height: 100%;
+}
   :global(*, *::before, *::after) {
     margin: 0;
     padding: 0;

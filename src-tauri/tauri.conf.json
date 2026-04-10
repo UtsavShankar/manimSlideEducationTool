@@ -13,8 +13,10 @@
     "windows": [
       {
         "decorations": false,
+        "backgroundColor": "#1e1e2e",
         "width":1440,
-        "height":1000
+        "height":1000,
+        "transparent": false
       }
     ],
     "security": {
