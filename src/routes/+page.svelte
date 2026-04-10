@@ -1,6 +1,28 @@
 <script lang="ts">
   import { getCurrentWindow } from '@tauri-apps/api/window';
   const appWindow = getCurrentWindow();
+  import { onMount } from 'svelte'
+  import loader from '@monaco-editor/loader'
+
+  let editorContainer: HTMLDivElement
+  let editor: any
+
+  onMount(async () => {
+    const monaco = await loader.init()
+    
+    editor = monaco.editor.create(editorContainer, {
+      value: `from manim import *\n\nclass Slide01(Scene):\n    def construct(self):\n        pass`,
+      language: 'python',
+      theme: 'vs-dark',
+      fontSize: 14,
+      minimap: { enabled: false },
+      automaticLayout: true,
+    })
+  })
+
+  export function getCode() {
+    return editor?.getValue()
+  } 
 </script>
 
 <main>
@@ -11,6 +33,11 @@
       <button onclick={() => appWindow.close()}>✕</button>
     </div>
   </div>
+
+
+  <div bind:this={editorContainer} style="width: 50%; height: 100%;"></div>
+
+
 </main>
 
 <style>
