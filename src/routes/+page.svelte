@@ -1,13 +1,23 @@
 <script lang="ts">
   import { getCurrentWindow } from '@tauri-apps/api/window';
+
   const appWindow = getCurrentWindow();
   import { onMount } from 'svelte'
   import loader from '@monaco-editor/loader'
+  import { convertFileSrc } from '@tauri-apps/api/core'
 
+  import { appLocalDataDir, join } from '@tauri-apps/api/path'
+    
+  let videoPlayer: HTMLVideoElement
   let editorContainer: HTMLDivElement
   let editor: any
+  let outputDir: string
 
   onMount(async () => {
+    const baseDir = await appLocalDataDir()
+    outputDir = await join(baseDir, 'videos')
+  
+
     const monaco = await loader.init()
     
     editor = monaco.editor.create(editorContainer, {
@@ -21,8 +31,33 @@
   })
 
   export function getCode() {
+    console.log(editor?.getValue())
     return editor?.getValue()
   } 
+
+
+/*
+function loadVideo(path: string) {
+  const assetUrl = convertFileSrc(path)
+  videoPlayer.src = path
+  videoPlayer.load()
+  videoPlayer.play()
+} */
+  
+/* async function render() {
+  const code = editor?.getValue()
+  
+  const res = await fetch('http://127.0.0.1:3001/render', {
+    method: 'POST',
+    headers: { 'Content-Type': 'application/json' },
+    body: JSON.stringify({ 
+      code,
+      output_dir: outputDir
+    })
+  })
+  }
+  */
+
 </script>
 
 <main>
@@ -33,14 +68,37 @@
       <button onclick={() => appWindow.close()}>✕</button>
     </div>
   </div>
+
+<button class="render-btn" onclick={() => getCode()}>Render</button>
   <div class="content">
     <div bind:this={editorContainer} class="editor"></div>
+  <video bind:this={videoPlayer} class="preview" controls>
+    <source src="" type="video/mp4">
+  </video>
+
   </div>
 </main>
 
 
 
 <style>
+.preview {
+  width: 50%;
+  height: 50%;
+  background: #000;
+}
+.render-btn {
+  background: #1F1F1F;
+  border: 1px solid white;
+  color: white;
+  padding: 4px 12px;
+  cursor: pointer;
+  border-radius: 4px;
+  font-size: 12px;
+  width: fit-content;
+  align-self: center;
+}
+
 .content {
   flex: 1;
   display: flex;
